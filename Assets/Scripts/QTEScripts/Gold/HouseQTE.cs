@@ -27,7 +27,7 @@ public class HouseQTE : MonoBehaviour
    
     public void ShowHouseStatus()
     {
-        statusImageTimer = ShowStatusImages(2f);
+        statusImageTimer = CountTimeOnStatusImages(2f);
         if(gameObject.activeSelf)
             StartCoroutine(statusImageTimer);
         if (Random.Range(0, 2).Equals(1))
@@ -49,9 +49,10 @@ public class HouseQTE : MonoBehaviour
         IsGoldAbleToCollect = false;
         goldImage.gameObject.SetActive(false);
         pitchforkImage.gameObject.SetActive(false);
+        StopCoroutine(statusImageTimer);
     }
 
-    IEnumerator ShowStatusImages(float seconds)
+    IEnumerator CountTimeOnStatusImages(float seconds)
     {
         yield return new WaitForSeconds(seconds);
         HideImage();

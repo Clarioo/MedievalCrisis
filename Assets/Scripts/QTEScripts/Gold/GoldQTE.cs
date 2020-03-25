@@ -6,36 +6,32 @@ using UnityEngine.UI;
 
 public class GoldQTE : QTEManager
 {
+    int housesToCollectCounter;
+    int housesToCollectLimit = 3;
+
+    #region UI Components
     [SerializeField] Transform housesPanel;
     [SerializeField] Button[] houses;
     [SerializeField] Button house;
 
     [SerializeField] KingdomState kingdomState;
     ResourcesState resState;
-
+    #endregion
     public UnityEvent onHouseClick;
 
 
     public override void StartQTE(QTEType qteType, int buildingLevel)
     {
+        housesToCollectLimit = buildingLevel + 5;
+        housesToCollectCounter = 0;
         resState = kingdomState.GetResState();
-        
-        houses = new Button[3]; 
-        for(int i = 0; i < 3; i++)
-        {
-            Button houseButton = GameObject.Instantiate(house, housesPanel);
-            houses[i] = houseButton;
-        }
-        ManageHouses();
+        ManageHouses(1);
     }
     
-    public void ManageHouses()
+    public void ManageHouses(int houseID)
     {
-        foreach(Button house in houses)
-        {
-            HouseQTE houseQTE = house.GetComponent<HouseQTE>();
-            houseQTE.ShowHouseStatus();
-        }
+        HouseQTE houseQTE = houses[houseID].GetComponent<HouseQTE>();
+        houseQTE.ShowHouseStatus();
     }
 
     public void ExecuteClick(HouseQTE houseQTE)
@@ -46,6 +42,9 @@ public class GoldQTE : QTEManager
             IrritatePeople();
 
         houseQTE.HideImage();
+        housesToCollectCounter++;
+        if(housesToCollectCounter <= housesToCollectLimit)
+            ManageHouses(Random.Range(0, houses.Length)); //Show next house to collect/irritate
     }
     public void CollectGold()
     {
